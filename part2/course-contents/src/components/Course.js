@@ -3,10 +3,11 @@ import React from 'react'
 const Header = props =>
   <h1>{props.course}</h1>
 
-// const Total = props => {
-
-//   return <p>Number of exercises {props.parts[0].exercises+props.parts[1].exercises+props.parts[2].exercises}</p>
-// }
+  
+const Total = ({parts}) => {
+  const total = parts.reduce((acc, val) => acc + val.exercises, 0)
+  return <p>Number of exercises {total}</p>
+}
   
 
 const Part = props =>
@@ -22,7 +23,7 @@ const Course = ({course}) => {
   <div>
     <Header course={course.name} />
     <Content parts={course.parts}/>
-    {/* <Total parts={course.parts} /> */}
+    <Total parts={course.parts} />
   </div>
   )
 }
