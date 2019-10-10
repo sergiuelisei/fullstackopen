@@ -5,6 +5,9 @@ const App = (props) => {
   const [ persons, setPersons] = useState(props.persons) 
   const [ newName, setNewName ] = useState('')
 
+  const checkPersonName = persons.filter(person => person.name===newName);
+  console.log(checkPersonName)
+
   const addEntry = (event) => {
     event.preventDefault()
 
@@ -12,9 +15,12 @@ const App = (props) => {
       name: newName,
       id: persons.length + 1
     }
+    checkPersonName.length
+      ? alert(`${newName} is already in the phonebook`)
+      : setPersons(persons.concat(entryObject));
 
-    setPersons(persons.concat(entryObject));
     setNewName('')
+    
   }
 
   const handleNameChange = (event) => {
