@@ -6,7 +6,7 @@ const Header = props =>
   
 const Total = ({parts}) => {
   const total = parts.reduce((acc, val) => acc + val.exercises, 0)
-  return <p>Number of exercises {total}</p>
+  return <h3>total of  {total} exercises</h3>
 }
   
 
