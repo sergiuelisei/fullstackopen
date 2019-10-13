@@ -1,74 +1,41 @@
-import React, { useState } from 'react'
-import Person from './components/Person'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import Filter from './components/Filter'
+import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 
-const App = (props) => {
-  const [ persons, setPersons] = useState(props.persons) 
+const App = () => {
+  const [ persons, setPersons] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
+  const [newFilter, setNewFilter] = useState('')
   
-  const checkPersonName = persons.filter(person => person.name===newName);
+useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+    }, [])
+  
 
-  const addEntry = (event) => {
-    event.preventDefault()
-
-    const entryObject = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1
-    }
-
-    if(newNumber && newName){
-    checkPersonName.length
-      ? alert(`${newName} is already in the phonebook`)
-      : setPersons(persons.concat(entryObject));
-    } else 
-    alert('please complete the name and the number field')
-    setNewName('')
-    setNewNumber('')
-    console.log(persons)
-  }
-
-  const handleNameChange = (event) => {
-    setNewName(event.target.value)
-  }
-
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value)
-  }
-
-  const entries = () => persons.map(person => 
-  <Person   key={person.name} name={person.name} number={person.number}  /> )
-
-  const handleSearch = (event) => {
-    const inputText = event.target.value.trim();
-    const results = persons.filter(person => person.name.trim().toLowerCase().includes(inputText.toLowerCase()));
-   
-    if(inputText){
-      setPersons(results)
-    }
-    else{
-      setPersons(props.persons)
-    }
-    
-  }
   return (
     <div>
       <h2>Phonebook</h2>
-     <Filter handleFilter={handleSearch} />
+     <Filter setNewFilter={setNewFilter} />
 
       <h2>add a new</h2>
-    <PersonForm 
-      addEntry={addEntry}
+    <PersonForm
+      persons={persons}
+      setPersons={setPersons}
       newName={newName}
-      handleNameChange={handleNameChange}
+      setNewName={setNewName} 
       newNumber={newNumber}
-      handleNumberChange={handleNumberChange}
+      setNewNumber={setNewNumber}
     />
 
       <h2>Numbers</h2>
-        {entries()}
+      <Persons newFilter={newFilter} persons={persons}/>  
     </div>
   )
 }
