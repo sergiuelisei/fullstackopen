@@ -1,6 +1,6 @@
 import React from 'react'
-import axios from 'axios'
 import personService from '../services/persons'
+import Persons from './Persons';
 
 const PersonForm = ({ setPersons, setNewName,setNewNumber,  newName, newNumber, persons}) => {
 
@@ -39,7 +39,8 @@ const handleNameChange = (event) => {
 const handleNumberChange = (event) => {
   setNewNumber(event.target.value)
 }
- 
+
+
  return (<form onSubmit={addEntry}>
         <div>
           name: <input  value={newName}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
+import personService from './services/persons'
 
 const App = () => {
   const [ persons, setPersons] = useState([]) 
@@ -11,13 +11,31 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
   
 useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+    .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
     }, [])
   
+
+    const deleteContact = (e) => {
+      const id = Number(e.target.id)
+      const name = e.target.name
+      const msg = `Do you really want to delete ${ name }?`
+    
+      if (window.confirm(msg) === true) {
+          personService
+              .deletePerson(id)
+              .then(deletedPerson => {
+                  setPersons(persons.filter(person => person.id !== id))
+              })
+              .catch(error => {
+                  alert( `${ name } was already removed`)
+                  setPersons(persons.filter(person => person.id !== id))
+              })
+      }
+    }
 
   return (
     <div>
@@ -35,7 +53,7 @@ useEffect(() => {
     />
 
       <h2>Numbers</h2>
-      <Persons newFilter={newFilter} persons={persons}/>  
+      <Persons newFilter={newFilter} persons={persons} deleteContact={deleteContact}/>  
     </div>
   )
 }
