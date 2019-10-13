@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 
 const PersonForm = ({ setPersons, setNewName,setNewNumber,  newName, newNumber, persons}) => {
 
@@ -13,15 +14,21 @@ const addEntry = (event) => {
       alert(`${newName} is already in the phonebook`)}
 
     else if(newName.length > 0 && newNumber.length > 0 ){
-        const newPersons = persons.concat({name: newName, number: newNumber})
-    
-        setPersons(newPersons)
+
+      axios
+      .post('http://localhost:3001/persons', {name: newName, number: newNumber})
+      .then(response => {
+        setPersons(persons.concat(response.data))
         setNewName('')
         setNewNumber('')
+      }) 
+      
     }
     else{
         alert("please complete the name and the number field")
     }
+
+   
 }
 
 const handleNameChange = (event) => {
