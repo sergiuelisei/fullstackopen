@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import personService from '../services/persons'
 
 const PersonForm = ({ setPersons, setNewName,setNewNumber,  newName, newNumber, persons}) => {
 
@@ -15,14 +16,14 @@ const addEntry = (event) => {
 
     else if(newName.length > 0 && newNumber.length > 0 ){
 
-      axios
-      .post('http://localhost:3001/persons', {name: newName, number: newNumber})
-      .then(response => {
-        setPersons(persons.concat(response.data))
+      personService
+      .create({name: newName, number: newNumber})
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
       }) 
-      
+
     }
     else{
         alert("please complete the name and the number field")
