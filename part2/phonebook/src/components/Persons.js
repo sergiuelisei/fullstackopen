@@ -15,7 +15,7 @@ const Persons = ({newFilter, persons, deleteContact}) => {
 
             <button name={ person.name } 
                     id={ person.id }
-                    onClick={ deleteContact }>delete</button>
+                    onClick={ deleteContact }> delete</button>
              
              </div>
     )    
