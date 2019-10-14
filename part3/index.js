@@ -9,35 +9,38 @@ const app = express()
 app.use(cors())
 
 morgan.token('person', (req) => {
-	return JSON.stringify(req.body)
+  return JSON.stringify(req.body)
 })
 
 app.use(bodyParser.json())
 app.use(morgan(':method :url :status :res[content-length] :response-time ms :person'))
 
 let persons = [
-      {
-        name: "Arto Hellas",
-        number: "2242424",
-        id: 1
-      },
-      {
-        name: "sergiu test",
-        number: "132-1231",
-        id: 2
-      },
-      {
-        name: "Test",
-        number: "123",
-        id: 3
-      },
-      {
-        name: "server",
-        number: "00000",
-        id: 4
-      }
+  {
+    name: "Arto Hellas",
+    number: "2242424",
+    id: 1
+  },
+  {
+    name: "sergiu test",
+    number: "132-1231",
+    id: 2
+  },
+  {
+    name: "Test",
+    number: "123",
+    id: 3
+  },
+  {
+    name: "server",
+    number: "00000",
+    id: 4
+  }
   
 ]
+
+
+app.use(express.static('build'))
 
 app.get('/', (req, res) => {
   res.send('<h1>Hello World!</h1>')
@@ -49,8 +52,8 @@ function generateId() {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-
- if (!body.name || !body.number) {
+  
+  if (!body.name || !body.number) {
     return response.status(400).json({
       error: 'name or number is missing'
     })
@@ -104,7 +107,7 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
