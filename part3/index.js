@@ -1,10 +1,16 @@
   
 const express = require('express')
-const app = express()
+const morgan = require('morgan')
 
 const bodyParser = require('body-parser')
+const app = express()
+
+morgan.token('person', (req) => {
+	return JSON.stringify(req.body)
+})
 
 app.use(bodyParser.json())
+app.use(morgan(':method :url :status :res[content-length] :response-time ms :person'))
 
 let persons = [
       {
@@ -59,11 +65,11 @@ app.post('/api/persons', (request, response) => {
 
   persons = persons.concat(person)
 
-  console.log(person.name)
-  console.log(body.name)
+  // console.log(person.name)
+  // console.log(body.name)
 
  
-  console.log(persons.find(p => p.name === body.name));
+  // console.log(persons.find(p => p.name === body.name));
   response.json(person) 
 })
 
