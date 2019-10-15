@@ -25,7 +25,7 @@ useEffect(() => {
   }    
 
     const deleteContact = (e) => {
-      const id = Number(e.target.id)
+      const id = e.target.id
       const name = e.target.name
       const msg = `Do you really want to delete ${ name }?`
     
