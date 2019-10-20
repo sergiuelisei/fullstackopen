@@ -88,7 +88,7 @@ useEffect(() => {
                   })
                   .catch(error => {
                     setNotificationMessage({
-                      "text": ` Information of  ${ duplicateContact.name } has already been removed from server`,
+                      "text": `${error.response.data.error}`,
                       "type": "error"
                   })
     
@@ -121,7 +121,19 @@ useEffect(() => {
           
            
   
-        }) 
+        }).catch(error => 
+          {
+            setNotificationMessage({
+              "text": ` ${error.response.data.error}`,
+              "type": "error"
+          })
+
+          setTimeout(() => {
+              setNotificationMessage(null)
+          }, 5000)}
+              
+          // console.log(error.response.data)
+        )
   
       }
       else{
