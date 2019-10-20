@@ -66,7 +66,7 @@ useEffect(() => {
   
   const addEntry = (event) => {
       event.preventDefault()
-      if( findPerson() ) {
+      if( duplicateContact ) {
            const msg =  `${ duplicateContact.name } is already added to phonebook, replace the old number with a new one?`
   
           if (window.confirm(msg) === true) {
@@ -82,7 +82,7 @@ useEffect(() => {
                   setTimeout(() => {
                       setNotificationMessage(null)
                   }, 5000)
-                      setPersons(persons.map(person => person.id !== duplicateContact.id ? person : updatedPerson))
+                      setPersons(persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson))
                       setNewName('')
                       setNewNumber('')
                   })
@@ -95,7 +95,7 @@ useEffect(() => {
                   setTimeout(() => {
                       setNotificationMessage(null)
                   }, 5000)
-                      setPersons(persons.filter(person => person.id !== duplicateContact.id))
+                        
                   })
           }
       }
