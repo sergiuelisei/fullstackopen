@@ -41,10 +41,22 @@ const mostBlogs = (blogs) => {
   return _.maxBy(listed, 'blogs')
 }
 
+const mostLikes = (blogs) => {
+  const sorted = _.groupBy(blogs, 'author')
+  const myList = []
+  _.forOwn(sorted, (value, key) => {
+    myList.push({
+      author: key,
+      likes: value.reduce((acc, blog) => acc + blog.likes, 0)
+    })
+  })
+  return _.maxBy(myList, 'likes')
+}
 
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
