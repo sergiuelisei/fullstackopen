@@ -4,22 +4,15 @@ const app = require('../app');
 const api = supertest(app);
 const Blog = require('../models/blog');
 
-const initialBlogs = [
-	{
-		title: 'lol'
-	},
-	{
-		title: 'test'
-	}
-];
+const helper = require('./test_helper');
 
 beforeEach(async () => {
 	await Blog.deleteMany({});
 
-	let blogObject = new Blog(initialBlogs[0]);
+	let blogObject = new Blog(helper.initialBlogs[0]);
 	await blogObject.save();
 
-	blogObject = new Blog(initialBlogs[1]);
+	blogObject = new Blog(helper.initialBlogs[1]);
 	await blogObject.save();
 });
 
@@ -30,7 +23,7 @@ test('blogs are returned as json', async () => {
 test('all blogs are returned', async () => {
 	const response = await api.get('/api/blogs');
 
-	expect(response.body.length).toBe(initialBlogs.length);
+	expect(response.body.length).toBe(helper.initialBlogs.length);
 });
 
 test('a specific blog is within the returned blogs', async () => {
@@ -44,6 +37,17 @@ test('a specific blog is within the returned blogs', async () => {
 test('blogs are defined with an unique id', async () => {
 	const response = await api.get('/api/blogs');
 	expect(response.body[0].id).toBeDefined();
+});
+
+test('new blog is created successfully', async () => {
+	const newBlog = {
+		title: 'the new blog post'
+	};
+
+	await api.post('/api/blogs').send(newBlog).expect(200).expect('Content-Type', /application\/json/);
+
+	const blogsAtEnd = await helper.blogsInDb();
+	expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1);
 });
 
 afterAll(() => {
