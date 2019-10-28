@@ -15,57 +15,78 @@ beforeEach(async () => {
 	blogObject = new Blog(helper.initialBlogs[1]);
 	await blogObject.save();
 });
+describe('when there is initially some blogs saved', () => {
+	test('blogs are returned as json', async () => {
+		await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/);
+	});
 
-test('blogs are returned as json', async () => {
-	await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/);
+	test('all blogs are returned', async () => {
+		const response = await api.get('/api/blogs');
+
+		expect(response.body.length).toBe(helper.initialBlogs.length);
+	});
+
+	test('a specific blog is within the returned blogs', async () => {
+		const response = await api.get('/api/blogs');
+
+		const contents = response.body.map((r) => r.title);
+
+		expect(contents).toContain('test');
+	});
 });
 
-test('all blogs are returned', async () => {
-	const response = await api.get('/api/blogs');
+describe('addition of a new blog', () => {
+	test('blogs are defined with an unique id', async () => {
+		const response = await api.get('/api/blogs');
+		expect(response.body[0].id).toBeDefined();
+	});
 
-	expect(response.body.length).toBe(helper.initialBlogs.length);
+	test('viewing a specific blog', async () => {
+		const newBlog = {
+			title: 'the new blog post'
+		};
+
+		await api.post('/api/blogs').send(newBlog).expect(200).expect('Content-Type', /application\/json/);
+
+		const blogsAtEnd = await helper.blogsInDb();
+		expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1);
+	});
+
+	test('like = 0 if the blog has no likes', async () => {
+		const missingLikes = {
+			title: 'Another real blog post'
+		};
+		if (!missingLikes.likes) {
+			const response = await api.post('/api/blogs').send({ ...missingLikes, likes: 0 });
+			expect(response.body.likes).toBe(0);
+		}
+	});
+
+	test('send error without title and url', async () => {
+		const missingTitleUrl = {
+			url: 'random_url'
+		};
+
+		if (!missingTitleUrl.title && !missingTitleUrl.url)
+			await api.post('/api/blogs').send(missingTitleUrl).expect(400);
+	});
 });
 
-test('a specific blog is within the returned blogs', async () => {
-	const response = await api.get('/api/blogs');
+describe('deletion of a blog', () => {
+	test('succeeds with status code 204 if id is valid', async () => {
+		const blogsAtStart = await helper.blogsInDb();
+		const blogToDelete = blogsAtStart[0];
 
-	const contents = response.body.map((r) => r.title);
+		await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
 
-	expect(contents).toContain('test');
-});
+		const blogsAtEnd = await helper.blogsInDb();
 
-test('blogs are defined with an unique id', async () => {
-	const response = await api.get('/api/blogs');
-	expect(response.body[0].id).toBeDefined();
-});
+		expect(blogsAtEnd.length).toBe(helper.initialBlogs.length - 1);
 
-test('new blog is created successfully', async () => {
-	const newBlog = {
-		title: 'the new blog post'
-	};
+		// const contents = blogsAtEnd.map((r) => r.content);
 
-	await api.post('/api/blogs').send(newBlog).expect(200).expect('Content-Type', /application\/json/);
-
-	const blogsAtEnd = await helper.blogsInDb();
-	expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1);
-});
-
-test('includes likes', async () => {
-	const missingLikes = {
-		title: 'Another real blog post'
-	};
-	if (!missingLikes.likes) {
-		const response = await api.post('/api/blogs').send({ ...missingLikes, likes: 0 });
-		expect(response.body.likes).toBe(0);
-	}
-});
-
-test('send error without title and url', async () => {
-	const missingTitleUrl = {
-		url: 'random_url'
-	};
-
-	if (!missingTitleUrl.title && !missingTitleUrl.url) await api.post('/api/blogs').send(missingTitleUrl).expect(400);
+		// expect(contents).not.toContain(blogToDelete.content);
+	});
 });
 
 afterAll(() => {
