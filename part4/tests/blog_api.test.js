@@ -50,6 +50,16 @@ test('new blog is created successfully', async () => {
 	expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1);
 });
 
+test('includes likes', async () => {
+	const missingLikes = {
+		title: 'Another real blog post'
+	};
+	if (!missingLikes.likes) {
+		const response = await api.post('/api/blogs').send({ ...missingLikes, likes: 0 });
+		expect(response.body.likes).toBe(0);
+	}
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
