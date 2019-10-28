@@ -60,6 +60,14 @@ test('includes likes', async () => {
 	}
 });
 
+test('send error without title and url', async () => {
+	const missingTitleUrl = {
+		url: 'random_url'
+	};
+
+	if (!missingTitleUrl.title && !missingTitleUrl.url) await api.post('/api/blogs').send(missingTitleUrl).expect(400);
+});
+
 afterAll(() => {
 	mongoose.connection.close();
 });
