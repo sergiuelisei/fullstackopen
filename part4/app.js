@@ -24,6 +24,7 @@ mongoose
 
 app.use(cors());
 
+app.use(middleware.tokenExtractor);
 app.use(express.static('build'));
 app.use(bodyParser.json());
 app.use(middleware.requestLogger);
