@@ -1,6 +1,7 @@
 import React from 'react'
 import Blog from './Blog'
 
+
 const Results = ({ user, blogs, handleLogout }) => {
     const elements = blogs.map(blog => {
         return (

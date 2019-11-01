@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Blogs from './components/Results';
+import AddNewBlog from './components/AddNewBlog'
 import blogsService from './services/blogs';
 import loginService from './services/login';
 
@@ -8,10 +9,15 @@ import loginService from './services/login';
 
 function App() {
 	const [blogs, setBlogs] = useState([]);
-	const [newBlog, setNewBlog] = useState('');
+	// const [newBlog, setNewBlog] = useState('');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [user, setUser] = useState(null);
+
+	const [title, setTitle] = useState('')
+	const [author, setAuthor] = useState('')
+	const [url, setUrl] = useState('')
+
 
 	useEffect(() => {
 		blogsService.getAll().then((initialBlogs) => setBlogs(initialBlogs));
@@ -50,6 +56,28 @@ function App() {
 		setUser(null)
 		blogsService.setToken(null)
 		window.localStorage.removeItem('loggedBlogappUser')
+	};
+
+	const handleAddBlog = async (event) => {
+		event.preventDefault()
+
+		const blog = {
+			title,
+			author,
+			url
+		}
+
+		try {
+			blogsService.setToken(user.token)
+			const response = await blogsService.create(blog)
+			setBlogs(blogs.concat(response))
+			setTitle('')
+			setAuthor('')
+			setUrl('')
+		} catch (err) {
+			console.log(err)
+		}
+
 	}
 
 	const loginForm = () => (
@@ -78,21 +106,23 @@ function App() {
 
 
 	const blogForm = () => (
-		<Blogs
-			user={user}
-			blogs={blogs}
-			handleLogout={handleLogout}
-		/>
+		<div>
 
-		// <form
-		// // onSubmit={addNote}
-		// >
-		// 	<input
-		// 		value={newBlog}
-		// 	// onChange={handleNoteChange}
-		// 	/>
-		// 	<button type="submit">save</button>
-		// </form>
+			<Blogs
+				user={user}
+				blogs={blogs}
+				handleLogout={handleLogout}
+			/>
+
+			<AddNewBlog
+				handleTitleChange={(e) => setTitle(e.target.value)}
+				handleAuthorChange={(e) => setAuthor(e.target.value)}
+				handleUrlChange={(e) => setUrl(e.target.value)}
+				handleAddBlog={(e) => handleAddBlog(e)}
+			/>
+
+		</div>
+
 	);
 
 	return <div>{user === null ? loginForm() : blogForm()}</div>;
