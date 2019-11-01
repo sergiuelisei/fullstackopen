@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Blogs from './components/Results';
 import AddNewBlog from './components/AddNewBlog'
+import Notification from './components/Notification'
 import blogsService from './services/blogs';
 import loginService from './services/login';
 
@@ -13,10 +14,11 @@ function App() {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [user, setUser] = useState(null);
-
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
+
+	const [notificationMessage, setNotificationMessage] = useState(null)
 
 
 	useEffect(() => {
@@ -47,8 +49,15 @@ function App() {
 			setUser(user);
 			setUsername('');
 			setPassword('');
-		} catch (exception) {
-			console.log(exception)
+		} catch (error) {
+			setNotificationMessage({
+				"text": `Wrong credentials`,
+				"type": "error"
+			})
+			setTimeout(() => {
+				setNotificationMessage(null)
+			}, 5000)
+
 		}
 	};
 
@@ -74,9 +83,19 @@ function App() {
 			setTitle('')
 			setAuthor('')
 			setUrl('')
+
+			setNotificationMessage({
+				"text": `${title} by ${author} added`,
+				"type": "notification"
+			})
+			setTimeout(() => {
+				setNotificationMessage(null)
+			}, 5000)
+
 		} catch (err) {
 			console.log(err)
 		}
+
 
 	}
 
@@ -108,11 +127,12 @@ function App() {
 	const blogForm = () => (
 		<div>
 
-			<Blogs
-				user={user}
-				blogs={blogs}
-				handleLogout={handleLogout}
-			/>
+			<div>
+				<h2>blogs</h2>
+				<p>{`${user.name} logged in`}
+					<button onClick={handleLogout}>Logout</button>
+				</p>
+			</div>
 
 			<AddNewBlog
 				handleTitleChange={(e) => setTitle(e.target.value)}
@@ -121,11 +141,18 @@ function App() {
 				handleAddBlog={(e) => handleAddBlog(e)}
 			/>
 
+			<br />
+			<Blogs
+				blogs={blogs}
+			/>
 		</div>
 
 	);
 
-	return <div>{user === null ? loginForm() : blogForm()}</div>;
+	return <div>
+		{notificationMessage !== null ? <Notification message={notificationMessage} /> : null}
+		{user === null ? loginForm() : blogForm()}
+	</div>;
 }
 
 export default App;

@@ -2,7 +2,7 @@ import React from 'react'
 import Blog from './Blog'
 
 
-const Results = ({ user, blogs, handleLogout }) => {
+const Results = ({ user, blogs }) => {
     const elements = blogs.map(blog => {
         return (
             <Blog key={blog.id}
@@ -14,10 +14,7 @@ const Results = ({ user, blogs, handleLogout }) => {
 
     return (
         <div>
-            <h2>blogs</h2>
-            <p>{`${user.name} logged in`}
-                <button onClick={handleLogout}>Logout</button>
-            </p>
+
 
 
             {elements}
