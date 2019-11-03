@@ -19,6 +19,7 @@ function App() {
 	const [url, setUrl] = useState('')
 
 	const [notificationMessage, setNotificationMessage] = useState(null)
+	const [createVisible, setCreateVisible] = useState(false)
 
 
 	useEffect(() => {
@@ -124,30 +125,42 @@ function App() {
 	);
 
 
-	const blogForm = () => (
-		<div>
+	const blogForm = () => {
+		const hideWhenVisible = { display: createVisible ? 'none' : '' }
+		const showWhenVisible = { display: createVisible ? '' : 'none' }
 
+		return (
 			<div>
-				<h2>blogs</h2>
-				<p>{`${user.name} logged in`}
-					<button onClick={handleLogout}>Logout</button>
-				</p>
+
+				<div>
+					<h2>blogs</h2>
+					<p>{`${user.name} logged in`}
+						<button onClick={handleLogout}>Logout</button>
+					</p>
+				</div>
+
+				<div style={hideWhenVisible}>
+					<button onClick={() => setCreateVisible(true)}>new note</button>
+				</div>
+
+				<div style={showWhenVisible}>
+					<AddNewBlog
+						handleTitleChange={(e) => setTitle(e.target.value)}
+						handleAuthorChange={(e) => setAuthor(e.target.value)}
+						handleUrlChange={(e) => setUrl(e.target.value)}
+						handleAddBlog={(e) => handleAddBlog(e)}
+					/>
+					<button onClick={() => setCreateVisible(false)}>cancel</button>
+				</div>
+
+				<br />
+				<Blogs
+					blogs={blogs}
+				/>
 			</div>
 
-			<AddNewBlog
-				handleTitleChange={(e) => setTitle(e.target.value)}
-				handleAuthorChange={(e) => setAuthor(e.target.value)}
-				handleUrlChange={(e) => setUrl(e.target.value)}
-				handleAddBlog={(e) => handleAddBlog(e)}
-			/>
-
-			<br />
-			<Blogs
-				blogs={blogs}
-			/>
-		</div>
-
-	);
+		)
+	};
 
 	return <div>
 		{notificationMessage !== null ? <Notification message={notificationMessage} /> : null}
