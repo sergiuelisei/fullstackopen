@@ -4,11 +4,15 @@ import AddNewBlog from './components/AddNewBlog'
 import Notification from './components/Notification'
 import blogsService from './services/blogs';
 import loginService from './services/login';
+import Togglable from './components/Togglable'
 
 // import logo from './logo.svg';
 // import './App.css';
 
 function App() {
+
+	const blogFormRef = React.createRef();
+
 	const [blogs, setBlogs] = useState([]);
 	// const [newBlog, setNewBlog] = useState('');
 	const [username, setUsername] = useState('');
@@ -19,7 +23,6 @@ function App() {
 	const [url, setUrl] = useState('')
 
 	const [notificationMessage, setNotificationMessage] = useState(null)
-	const [createVisible, setCreateVisible] = useState(false)
 
 
 	useEffect(() => {
@@ -70,6 +73,7 @@ function App() {
 
 	const handleAddBlog = async (event) => {
 		event.preventDefault()
+		blogFormRef.current.toggleVisibility()
 
 		const blog = {
 			title,
@@ -77,24 +81,35 @@ function App() {
 			url
 		}
 
-		try {
-			blogsService.setToken(user.token)
-			const response = await blogsService.create(blog)
-			setBlogs(blogs.concat(response))
-			setTitle('')
-			setAuthor('')
-			setUrl('')
-
+		if (!title || !author || !url) {
 			setNotificationMessage({
-				"text": `${title} by ${author} added`,
-				"type": "notification"
+				"text": "Empty fields",
+				"type": "error"
 			})
 			setTimeout(() => {
 				setNotificationMessage(null)
 			}, 5000)
+		}
+		else {
+			try {
+				blogsService.setToken(user.token)
+				const response = await blogsService.create(blog)
+				setBlogs(blogs.concat(response))
+				setTitle('')
+				setAuthor('')
+				setUrl('')
 
-		} catch (err) {
-			console.log(err)
+				setNotificationMessage({
+					"text": `${title} by ${author} added`,
+					"type": "notification"
+				})
+				setTimeout(() => {
+					setNotificationMessage(null)
+				}, 5000)
+
+			} catch (err) {
+				console.log(err)
+			}
 		}
 
 
@@ -125,42 +140,34 @@ function App() {
 	);
 
 
-	const blogForm = () => {
-		const hideWhenVisible = { display: createVisible ? 'none' : '' }
-		const showWhenVisible = { display: createVisible ? '' : 'none' }
-
-		return (
+	const blogForm = () => (
+		<div>
 			<div>
-
-				<div>
-					<h2>blogs</h2>
-					<p>{`${user.name} logged in`}
-						<button onClick={handleLogout}>Logout</button>
-					</p>
-				</div>
-
-				<div style={hideWhenVisible}>
-					<button onClick={() => setCreateVisible(true)}>new note</button>
-				</div>
-
-				<div style={showWhenVisible}>
-					<AddNewBlog
-						handleTitleChange={(e) => setTitle(e.target.value)}
-						handleAuthorChange={(e) => setAuthor(e.target.value)}
-						handleUrlChange={(e) => setUrl(e.target.value)}
-						handleAddBlog={(e) => handleAddBlog(e)}
-					/>
-					<button onClick={() => setCreateVisible(false)}>cancel</button>
-				</div>
-
-				<br />
-				<Blogs
-					blogs={blogs}
-				/>
+				<h2>blogs</h2>
+				<p>{`${user.name} logged in`}
+					<button onClick={handleLogout}>Logout</button>
+				</p>
 			</div>
 
-		)
-	};
+
+
+			<Togglable buttonLabel="new blog" ref={blogFormRef}>
+				<AddNewBlog
+					handleTitleChange={(e) => setTitle(e.target.value)}
+					handleAuthorChange={(e) => setAuthor(e.target.value)}
+					handleUrlChange={(e) => setUrl(e.target.value)}
+					handleAddBlog={(e) => handleAddBlog(e)}
+				/>
+			</Togglable>
+
+			<br />
+			<Blogs
+				blogs={blogs}
+			/>
+		</div>
+
+	)
+
 
 	return <div>
 		{notificationMessage !== null ? <Notification message={notificationMessage} /> : null}
