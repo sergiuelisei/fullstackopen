@@ -73,12 +73,15 @@ function App() {
 
 	const handleAddBlog = async (event) => {
 		event.preventDefault()
+
 		blogFormRef.current.toggleVisibility()
 
 		const blog = {
 			title,
 			author,
-			url
+			url,
+			likes: 0,
+			user: user.id
 		}
 
 		if (!title || !author || !url) {
@@ -111,8 +114,36 @@ function App() {
 				console.log(err)
 			}
 		}
+	}
 
+	const handleLike = async (event) => {
+		event.preventDefault()
 
+		const selectBlogId = event.target.value;
+		const selectedBlog = blogs.find(blog => blog.id === selectBlogId);
+		// console.log(selectBlogId)
+		// console.log(selectedBlog);
+
+		const blog = {
+			...selectedBlog,
+			likes: selectedBlog.likes + 1,
+			user: selectedBlog.user
+		}
+		console.log(blog)
+
+		try {
+			const response = await blogsService.update(selectBlogId, blog)
+			setBlogs(blogs.map(blog => blog.id === selectBlogId ? response : blog))
+		} catch (error) {
+			setNotificationMessage({
+				"text": error.response.data.error,
+				"type": "error"
+			})
+
+			setTimeout(() => {
+				setNotificationMessage(null)
+			}, 5000)
+		}
 	}
 
 	const loginForm = () => (
@@ -162,7 +193,9 @@ function App() {
 
 			<br />
 			<Blogs
+				user={user}
 				blogs={blogs}
+				handleLike={(e) => handleLike(e)}
 			/>
 		</div>
 
