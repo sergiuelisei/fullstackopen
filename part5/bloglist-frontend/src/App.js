@@ -78,12 +78,12 @@ function App() {
 
 		const blog = {
 			title,
+			user,
 			author,
 			url,
-			likes: 0,
-			user: user.id
+			likes: 0
 		}
-
+		console.log(blog)
 		if (!title || !author || !url) {
 			setNotificationMessage({
 				"text": "Empty fields",
@@ -116,24 +116,27 @@ function App() {
 		}
 	}
 
-	const handleLike = async (event) => {
-		event.preventDefault()
+	const handleLike = async blog => {
 
-		const selectBlogId = event.target.value;
-		const selectedBlog = blogs.find(blog => blog.id === selectBlogId);
-		// console.log(selectBlogId)
-		// console.log(selectedBlog);
+		// const selectBlogId = event.target.value;
+		// const selectedBlog = blogs.find(blog => blog.id === selectBlogId);
+		// // console.log(selectBlogId)
+		// // console.log(selectedBlog);
 
-		const blog = {
-			...selectedBlog,
-			likes: selectedBlog.likes + 1,
-			user: selectedBlog.user
-		}
-		console.log(blog)
+		// const blog = {
+		// 	user: selectedBlog.user.id,
+		// 	...selectedBlog,
+		// 	likes: selectedBlog.likes + 1
+		// }
+		// console.log(blog)
 
 		try {
-			const response = await blogsService.update(selectBlogId, blog)
-			setBlogs(blogs.map(blog => blog.id === selectBlogId ? response : blog))
+			// const response = await blogsService.update(selectBlogId, blog)
+			// setBlogs(blogs.map(blog => blog.id === selectBlogId ? response : blog))
+			const newObject = { ...blog.blog, likes: blog.blog.likes + 1 }
+			console.log(newObject)
+			blogsService.update(blog.blog.id, newObject)
+			setBlogs(blogs.map(p => (p.id === blog.blog.id ? newObject : p)))
 		} catch (error) {
 			setNotificationMessage({
 				"text": error.response.data.error,
