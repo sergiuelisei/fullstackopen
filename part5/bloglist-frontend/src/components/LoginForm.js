@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 const LoginForm = ({ handleUsernameChange, handlePasswordChange, handleLogin }) => {
     return (
@@ -7,14 +7,14 @@ const LoginForm = ({ handleUsernameChange, handlePasswordChange, handleLogin }) 
             <form onSubmit={handleLogin}>
                 <div>
                     username:
-                    <input
+          <input
                         type='text'
                         onChange={handleUsernameChange}
                     />
                 </div>
                 <div>
                     password:
-                    <input
+          <input
                         type='password'
                         onChange={handlePasswordChange}
                     />

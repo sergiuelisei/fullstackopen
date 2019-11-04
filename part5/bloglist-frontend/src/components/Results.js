@@ -23,4 +23,4 @@ const Results = ({ handleLike, blogs, handleRemove }) => {
     )
 }
 
-export default Results 
+export default Results
