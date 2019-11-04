@@ -3,7 +3,7 @@ import Blog from './Blog'
 
 
 const Results = ({ handleLike, blogs }) => {
-    const elements = blogs.map(blog => {
+    const elements = blogs.sort((a, b) => b.likes - a.likes).map(blog => {
         return (
             <Blog key={blog.id}
                 blog={blog}

@@ -27,6 +27,7 @@ function App() {
 
 	useEffect(() => {
 		blogsService.getAll().then((initialBlogs) => setBlogs(initialBlogs));
+
 	}, []);
 
 	useEffect(() => {
