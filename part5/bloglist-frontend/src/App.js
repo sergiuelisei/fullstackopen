@@ -150,6 +150,38 @@ function App() {
 		}
 	}
 
+	const handleRemove = async (e) => {
+		const selectBlogId = e.target.value
+		const selectedBlog = blogs.find(b => b.id === selectBlogId);
+
+		const msg = `remove blog ${selectedBlog.title}`
+
+		try {
+			if (window.confirm(msg) === true) {
+				blogsService.setToken(user.token)
+				await blogsService.remove(selectBlogId)
+				setBlogs(blogs.filter(b => b.id !== selectBlogId))
+				setNotificationMessage({
+					"text": "deleted!",
+					"type": "notification"
+				})
+				setTimeout(() => {
+					setNotificationMessage(null)
+				}, 5000)
+			}
+
+		} catch (error) {
+			setNotificationMessage({
+				"text": "something went wrong",
+				"type": "error"
+			})
+
+			setTimeout(() => {
+				setNotificationMessage(null)
+			}, 5000)
+		}
+	}
+
 	const loginForm = () => (
 		<form onSubmit={handleLogin}>
 			<div>
@@ -200,6 +232,7 @@ function App() {
 				user={user}
 				blogs={blogs}
 				handleLike={(e) => handleLike(e)}
+				handleRemove={(e) => handleRemove(e)}
 			/>
 		</div>
 
