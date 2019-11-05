@@ -21,12 +21,12 @@ const Blog = ({ blog, handleLike, handleRemove }) => {
 
 	return (
 		<div style={blogStyle}>
-			<div onClick={handleVisibleEvent}>
+			<div onClick={handleVisibleEvent} className='partialBlog'>
 				<div>{blog.title}</div>
 				<div>{blog.author}</div>
 			</div>
 
-			<div style={showWhenVisibleStyle}>
+			<div style={showWhenVisibleStyle} className='fullBlog'>
 				<div>
 					<div >
 						<a href={blog.url}>{blog.url}</a>
