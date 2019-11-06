@@ -45,8 +45,8 @@ function App() {
 		event.preventDefault()
 		try {
 			const user = await loginService.login({
-				username: username.value,
-				password: password.value
+				username: username.data.value,
+				password: password.data.value
 			})
 
 			window.localStorage.setItem(
@@ -189,13 +189,13 @@ function App() {
 			<div>
 				username
 				<input
-					{...username}
+					{...username.data}
 				/>
 			</div>
 			<div>
 				password
 				<input
-					{...password}
+					{...password.data}
 				/>
 			</div>
 			<button type="submit">login</button>
