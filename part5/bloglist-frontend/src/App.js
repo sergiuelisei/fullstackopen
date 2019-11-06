@@ -54,8 +54,8 @@ function App() {
 			)
 			blogsService.setToken(user.token)
 			setUser(user)
-			username.value = ''
-			password.value = ''
+			username.reset()
+			password.reset()
 		} catch (error) {
 			setNotificationMessage({
 				'text': 'Wrong credentials',
