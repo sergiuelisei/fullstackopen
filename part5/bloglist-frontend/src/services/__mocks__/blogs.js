@@ -37,8 +37,7 @@ const blogs = [
 	}
 ]
 
-const getAll = () => {
-	return Promise.resolve(blogs)
-}
+const getAll = () => Promise.resolve(blogs)
+
 
 export default { getAll }
