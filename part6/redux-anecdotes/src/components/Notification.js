@@ -7,9 +7,10 @@ const Notification = props => {
 		borderWidth: 1
 	}
 	return (
-		<div style={style}>
-			{props.store.getState().notification}
-		</div>
+		props.store.getState().notificationReducer ?
+			<div style={style}>
+				{props.store.getState().notificationReducer}
+			</div> : null
 	)
 }
 
