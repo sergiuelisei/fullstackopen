@@ -4,7 +4,6 @@ import { setNotif, removeNotif } from '../reducers/notificationReducer'
 import { connect } from 'react-redux'
 
 const AnecdoteList = props => {
-	const anecdotes = props.anecdotes
 
 	const vote = (id, content) => {
 		// console.log('vote', id)
@@ -19,30 +18,33 @@ const AnecdoteList = props => {
 	return (
 		<div>
 			{
-				anecdotes
-					.filter(anecdote =>
-						anecdote.content.toLowerCase()
-							.includes(props.filter.toLowerCase()))
-					.map(anecdote =>
-						<div key={anecdote.id}>
-							<div>
-								{anecdote.content}
-							</div>
-							<div>
-								has {anecdote.votes}
-								<button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
-							</div>
+				props.anecdotesToShow.map(anecdote =>
+					<div key={anecdote.id}>
+						<div>
+							{anecdote.content}
 						</div>
-					)
+						<div>
+							has {anecdote.votes}
+							<button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
+						</div>
+					</div>
+				)
 			}
 		</div>
 	)
 }
 
+const anecdotesToShow = (anecdotes, filter) => {
+	return anecdotes
+		.filter(anecdote =>
+			anecdote.content.toLowerCase()
+				.includes(filter.toLowerCase()))
+}
+
 const mapStateToProps = (state) => {
 	console.log(state)
 	return {
-		anecdotes: state.anecdotes,
+		anecdotesToShow: anecdotesToShow(state.anecdotes, state.filter),
 		filter: state.filter
 	}
 }
