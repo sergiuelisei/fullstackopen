@@ -1,3 +1,5 @@
+import anecdotes from "../services/anecdotes"
+
 const anecdotesAtStart = [
 	'If it hurts, do it more often',
 	'Adding manpower to a late software project makes it later!',
@@ -33,7 +35,14 @@ export const createAnecdote = (content) => {
 	}
 }
 
-const ancedoteReducer = (state = initialState, action) => {
+export const initializeAnec = anecdotes => {
+	return {
+		type: 'INIT_ANEC',
+		data: anecdotes
+	}
+}
+
+const ancedoteReducer = (state = [], action) => {
 	console.log('state now: ', state)
 	console.log('action', action)
 
@@ -46,6 +55,9 @@ const ancedoteReducer = (state = initialState, action) => {
 				.sort((a, b) => b.votes - a.votes)
 		case 'ADD':
 			return state.concat(asObject(action.data.content))
+		case 'INIT_ANEC':
+			return action.data
+
 		default:
 			return state
 	}
