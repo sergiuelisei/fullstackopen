@@ -22,7 +22,7 @@ const AnecdoteList = props => {
 				anecdotes
 					.filter(anecdote =>
 						anecdote.content.toLowerCase()
-							.includes(props.store.getState().filter.toLowerCase()))
+							.includes(props.filter.toLowerCase()))
 					.map(anecdote =>
 						<div key={anecdote.id}>
 							<div>
