@@ -5,10 +5,10 @@ import { connect } from 'react-redux'
 
 const AnecdoteList = props => {
 
-	const vote = (id, content) => {
-		// console.log('vote', id)
-		props.addVote(id)
-		props.setNotif(`You voted for: ${content}`)
+	const vote = (id) => {
+		const anecdoteToChange = props.anecdotesToShow.find(o => o.id === id)
+		props.addVote(id, anecdoteToChange)
+		props.setNotif(`You voted for: ${anecdoteToChange.content}`)
 		setTimeout(() => {
 			props.removeNotif()
 		}, 5000)
@@ -25,7 +25,7 @@ const AnecdoteList = props => {
 						</div>
 						<div>
 							has {anecdote.votes}
-							<button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
+							<button onClick={() => vote(anecdote.id)}>vote</button>
 						</div>
 					</div>
 				)
