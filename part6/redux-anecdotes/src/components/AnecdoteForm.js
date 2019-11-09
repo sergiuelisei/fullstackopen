@@ -13,11 +13,8 @@ const AnecdoteForm = (props) => {
 		// const newAnec = await anecdoteService.createNew(content)
 		props.createAnecdote(content)
 
-		props.setNotif(`You created a new anecdote: ${content}`)
+		props.setNotif(`You created a new anecdote: ${content}`, 5000)
 
-		setTimeout(() => {
-			props.removeNotif()
-		}, 5000)
 	}
 
 	return (
@@ -30,8 +27,7 @@ const AnecdoteForm = (props) => {
 
 const mapDispatchToProps = {
 	createAnecdote,
-	setNotif,
-	removeNotif
+	setNotif
 }
 
 const ConnectedAnecdoteForm = connect(null, mapDispatchToProps)(AnecdoteForm)

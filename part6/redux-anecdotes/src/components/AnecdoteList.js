@@ -1,6 +1,6 @@
 import React from 'react'
 import { addVote } from '../reducers/anecdoteReducer'
-import { setNotif, removeNotif } from '../reducers/notificationReducer'
+import { setNotif } from '../reducers/notificationReducer'
 import { connect } from 'react-redux'
 
 const AnecdoteList = props => {
@@ -8,10 +8,8 @@ const AnecdoteList = props => {
 	const vote = (id) => {
 		const anecdoteToChange = props.anecdotesToShow.find(o => o.id === id)
 		props.addVote(id, anecdoteToChange)
-		props.setNotif(`You voted for: ${anecdoteToChange.content}`)
-		setTimeout(() => {
-			props.removeNotif()
-		}, 5000)
+		props.setNotif(`You voted for: ${anecdoteToChange.content}`, 10000)
+
 	}
 
 
@@ -51,8 +49,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
 	addVote,
-	setNotif,
-	removeNotif
+	setNotif
 }
 
 
