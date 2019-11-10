@@ -109,6 +109,16 @@ const CreateNew = (props) => {
 }
 const Create = withRouter(CreateNew)
 
+const Notification = ({ message }) => {
+	return (
+		message ?
+			<div style={{ color: 'red', border: 'solid' }}>
+				{message}
+			</div>
+			:
+			null
+	)
+}
 const App = () => {
 	const [anecdotes, setAnecdotes] = useState([
 		{
@@ -126,12 +136,15 @@ const App = () => {
 			id: '2'
 		}
 	])
-
 	const [notification, setNotification] = useState('')
 
 	const addNew = (anecdote) => {
 		anecdote.id = (Math.random() * 10000).toFixed(0)
 		setAnecdotes(anecdotes.concat(anecdote))
+		setNotification(`a new anecdote "${anecdote.content}" created!`)
+		setTimeout(() => {
+			setNotification(null)
+		}, 10000)
 	}
 
 	const anecdoteById = (id) =>
@@ -153,6 +166,7 @@ const App = () => {
 			<Router>
 				<div>
 					<h1>Software anecdotes</h1>
+					<Notification message={notification} />
 					<Menu />
 
 					<Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
